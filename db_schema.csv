@@ -1,0 +1,23 @@
+Table,Column,Type,Constraints,Description
+users,id,Integer,Primary Key, Auto-increment,User ID
+users,username,String,Unique, Not Null, Indexed,Username
+users,hashed_password,String,Not Null,Hashed password
+users,is_admin,Boolean,Default False,Is admin user
+users,created_at,DateTime,Not Null,User creation timestamp
+users,updated_at,DateTime,Not Null,User update timestamp
+
+documents,id,Integer,Primary Key, Auto-increment,Document ID
+documents,name,String,Not Null,Document name
+documents,owner_id,Integer,ForeignKey(users.id),Owner (user) ID
+documents,content,Text,Not Null,Extracted document text
+documents,created_at,DateTime,Not Null,Document creation timestamp
+documents,updated_at,DateTime,Not Null,Document update timestamp
+
+document_chunks,id,Integer,Primary Key, Auto-increment,Chunk ID
+document_chunks,document_id,Integer,ForeignKey(documents.id),Parent document ID
+document_chunks,chunk_index,Integer,Not Null,Chunk order/index
+document_chunks,chunk_text,Text,Not Null,Chunked text
+document_chunks,embedding,Text,Nullable,Mocked embedding (JSON/text)
+document_chunks,created_at,DateTime,Not Null,Chunk creation timestamp
+document_chunks,updated_at,DateTime,Not Null,Chunk update timestamp
+document_chunks,status,String,Default 'active',Chunk status
