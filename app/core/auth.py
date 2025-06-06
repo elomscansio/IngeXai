@@ -10,7 +10,7 @@ from app.services.user import get_user_by_username, authenticate_user, get_passw
 
 ALGORITHM = "HS256"
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/token")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

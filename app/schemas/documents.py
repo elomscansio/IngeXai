@@ -29,7 +29,7 @@ class DocumentListResponse(BaseResponseSchema):
 
 
 class DocumentDetail(BaseModel):
-    document: DocumentBaseSchema
+    document: Optional[DocumentBaseSchema] = None
     chunks: list[DocumentChunkSchema]
 
 

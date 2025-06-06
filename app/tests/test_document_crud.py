@@ -30,7 +30,7 @@ def auth_token():
     delete_test_user("cruduser")
     client.post("/users/", data={"username": "cruduser", "password": "crudpass"})
     response = client.post("/users/token", data={"username": "cruduser", "password": "crudpass"})
-    return response.json()["data"]["access_token"]
+    return response.json()["access_token"]
 
 def test_create_and_get_document(auth_token):
     headers = {"Authorization": f"Bearer {auth_token}"}
@@ -66,3 +66,37 @@ def test_update_and_delete_document(auth_token):
     del_data = response.json()
     assert del_data["status"] is True
     assert del_data["data"]["external_status"] == "deleted"
+
+def test_get_document_chunks(auth_token):
+    headers = {"Authorization": f"Bearer {auth_token}"}
+    # Upload a document
+    files = {"file": ("ChunkTest.txt", b"Chunk one. Chunk two.", "text/plain")}
+    response = client.post("/documents/upload", files=files, headers=headers)
+    assert response.status_code == 200
+    doc_id = int(response.json()["data"]["document_id"])
+    # Get document chunks
+    response = client.get(f"/documents/{doc_id}/chunks", headers=headers)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] is True
+    assert isinstance(data["data"], dict)
+    assert isinstance(data["data"]["chunks"], list)
+    assert len(data["data"]["chunks"]) > 0
+    assert "chunk_text" in data["data"]["chunks"][0]
+
+
+def test_search_document_chunks(auth_token):
+    headers = {"Authorization": f"Bearer {auth_token}"}
+    # Upload a document
+    files = {"file": ("SearchChunk.txt", b"Find me in a chunk.", "text/plain")}
+    response = client.post("/documents/upload", files=files, headers=headers)
+    assert response.status_code == 200
+    # Search for a chunk
+    response = client.post("/documents/search_chunks", data={"query": "Find", "top_k": "1"}, headers=headers)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] is True
+    assert isinstance(data["data"], dict)
+    assert isinstance(data["data"]["chunks"], list)
+    if data["data"]["chunks"]:
+        assert "chunk_text" in data["data"]["chunks"][0]

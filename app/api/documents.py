@@ -73,7 +73,11 @@ def get_document_chunks(
             data=None
         )
     chunks = db.query(DocumentChunk).filter(DocumentChunk.document_id == doc.id).all()
-    data = [DocumentChunkSchema.from_orm(c) for c in chunks]
+    chunk_data = [DocumentChunkSchema.from_orm(c) for c in chunks]
+    data = DocumentDetail(
+        document=DocumentBaseSchema.from_orm(doc),
+        chunks=chunk_data
+    )
     return DocumentChunkListResponse(
         message="Document chunks fetched successfully",
         status=True,
@@ -210,10 +214,14 @@ def search_document_chunks(
     query_embedding = vector_store.mock_embedding(query)
     chunk_ids = vector_store.vector_store.search(query_embedding, top_k=top_k)
     chunks = db.query(DocumentChunk).filter(DocumentChunk.id.in_(chunk_ids)).all()
-    data = [DocumentChunkSchema.from_orm(c) for c in chunks]
+    chunk_data = [DocumentChunkSchema.from_orm(c) for c in chunks]
+    data = DocumentDetail(
+        document=None,
+        chunks=chunk_data
+    )
     return DocumentChunkListResponse(
         message="Search successful",
         status=True,
         status_code=200,
-        data=data  # If the response model expects a list, keep this. If it expects a DocumentDetail, wrap accordingly.
+        data=data
     )

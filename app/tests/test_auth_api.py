@@ -35,8 +35,8 @@ def test_user_registration_and_login():
     response = client.post("/users/token", data={"username": "testuser", "password": "testpass"})
     assert response.status_code == 200
     data = response.json()
-    assert data["status"] is True
-    assert "access_token" in data["data"]
+    assert "access_token" in data
+    assert data["token_type"] == "bearer"
 
 def test_protected_endpoint_requires_auth():
     response = client.get("/documents")
@@ -47,7 +47,7 @@ def auth_token():
     delete_test_user("testuser")
     client.post("/users/", data={"username": "testuser", "password": "testpass"})
     response = client.post("/users/token", data={"username": "testuser", "password": "testpass"})
-    return response.json()["data"]["access_token"]
+    return response.json()["access_token"]
 
 def test_protected_endpoint_with_auth(auth_token):
     headers = {"Authorization": f"Bearer {auth_token}"}

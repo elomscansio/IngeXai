@@ -101,10 +101,11 @@ A simplified document connector and API service for Engineering Lead assessment.
 - Use Docker for reproducible deployment.
 - Add more comprehensive integration and security tests.
 - Support more document types and advanced chunking strategies.
+- Implement real vector similarity search (e.g., cosine similarity) for chunk search instead of the current mock (returns most relevant chunks for a query).
 
-## Database Design
+## Database Design 
 
-The PostgreSQL schema consists of three main tables:
+The PostgreSQL schema consists of three main tables: https://docs.google.com/spreadsheets/d/e/2PACX-1vS2jA0Ga6EJnoBVNJYX4Ib3f69tgyifvta_gXTXdtmSN_dXYY5snZRNDUFwlOem_VdV8j9lXGeHjoNE/pubhtml
 
 ### users
 
